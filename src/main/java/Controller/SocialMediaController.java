@@ -40,6 +40,7 @@ public class SocialMediaController {
         app.get("/messages", this::getAllMessages); 
         app.get("/messages/{message_id}", this::getMessageByID); 
         app.delete("/messages/{message_id}", this::deleteMessageByID); 
+        app.patch("/messages/{message_id}", this::updateMessageTextByID); 
 
         return app;
     }
@@ -125,4 +126,50 @@ public class SocialMediaController {
             ctx.json(deletedMessage); 
         }
     }
+
+    private void updateMessageTextByID(Context ctx) {
+        Message message = ctx.bodyAsClass(Message.class); 
+        String newMessageText = message.getMessage_text(); 
+        if (newMessageText.isEmpty() || newMessageText.length() > 255) {
+            ctx.status(400); 
+            return; 
+        }
+
+        int id = Integer.parseInt(ctx.pathParam("message_id")); 
+        if (messageService.getMessageByID(id) != null) {
+            Message updatedMessage = messageService.updateMessageTextByID(id, newMessageText); 
+            if (updatedMessage != null) {
+                ctx.json(updatedMessage); 
+            } else {
+                ctx.status(400); 
+            }
+        } else {
+            ctx.status(400); 
+        }
+    }
+
+    // private void updateMessageTextByID(Context ctx) throws JsonProcessingException {
+    //     ObjectMapper mapper = new ObjectMapper(); 
+    //     String jsonString = ctx.body(); 
+    //     System.out.println(jsonString); 
+    //     Message message = mapper.readValue(jsonString, Message.class); 
+
+    //     String newMessageText = message.getMessage_text();
+    //     if (newMessageText.isEmpty() || newMessageText.length() > 255) {
+    //         ctx.status(400); 
+    //         return; 
+    //     }
+
+    //     int id = Integer.parseInt(ctx.pathParam("message_id")); 
+    //     if (messageService.getMessageByID(id) != null) {
+    //         Message updatedMessage = messageService.updateMessageTextByID(id, newMessageText); 
+    //         if (updatedMessage != null) {
+    //             ctx.json(mapper.writeValueAsString(updatedMessage)); 
+    //         } else {
+    //             ctx.status(400); 
+    //         }
+    //     } else {
+    //         ctx.status(400); 
+    //     }
+    // }
 }

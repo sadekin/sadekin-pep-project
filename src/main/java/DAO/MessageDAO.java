@@ -5,7 +5,7 @@ import Util.ConnectionUtil;
 
 import java.sql.*;
 import java.util.ArrayList; 
-import java.util.List; 
+import java.util.List;
 
 public class MessageDAO {
     
@@ -13,14 +13,15 @@ public class MessageDAO {
         Connection connection = ConnectionUtil.getConnection(); 
 
         try {
+            // insert new message
             String sql = "INSERT INTO message (posted_by, message_text, time_posted_epoch) VALUES (?, ?, ?)"; 
-
             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS); 
             preparedStatement.setInt(1, message.getPosted_by());
             preparedStatement.setString(2, message.getMessage_text());
             preparedStatement.setLong(3, message.getTime_posted_epoch()); 
             preparedStatement.executeUpdate(); 
 
+            // return inserted message
             ResultSet pkResultSet = preparedStatement.getGeneratedKeys(); 
             if (pkResultSet.next()) {
                 int generatedMessageID = (int) pkResultSet.getLong("message_id"); 
@@ -43,9 +44,11 @@ public class MessageDAO {
         List<Message> messages = new ArrayList<>(); 
 
         try {
+            // select all messages
             String sql = "SELECT * FROM message"; 
-
             PreparedStatement preparedStatement = connection.prepareStatement(sql); 
+
+            // return them in a list
             ResultSet resultSet = preparedStatement.executeQuery();   
             while (resultSet.next()) {
                 Message message = new Message(
@@ -68,10 +71,12 @@ public class MessageDAO {
         Connection connection = ConnectionUtil.getConnection(); 
 
         try {
+            // select message by ID
             String sql = "SELECT * FROM message WHERE message_id = ?"; 
             PreparedStatement preparedStatement = connection.prepareStatement(sql); 
             preparedStatement.setInt(1, id);
 
+            // return the message
             ResultSet resultSet = preparedStatement.executeQuery(); 
             if (resultSet.next()) {
                 return new Message(
@@ -88,27 +93,47 @@ public class MessageDAO {
         return null; 
     }
 
-    public Message deleteMessageByID(int id) {
+    public void deleteMessageByID(int id) {
         Connection connection = ConnectionUtil.getConnection(); 
-
         try {
+            // straightforward
             String sql = "DELETE * FROM message WHERE message_id = ?"; 
-            
             PreparedStatement preparedStatement = connection.prepareStatement(sql); 
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate(); 
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
-            ResultSet resultSet = preparedStatement.getResultSet(); 
+    public Message updateMessageTextByID(int id, String text) {
+        Connection connection = ConnectionUtil.getConnection(); 
+
+        try {
+            // update message
+            String sql = "UPDATE message SET message_text = ? WHERE message_id = ?"; 
+            PreparedStatement preparedStatement = connection.prepareStatement(sql); 
+            preparedStatement.setString(1, text);
+            preparedStatement.setInt(2, id);
+            preparedStatement.executeUpdate(); 
+
+            // select newly updated message
+            sql = "SELECT * FROM message WHERE message_id = ?"; 
+            preparedStatement = connection.prepareStatement(sql); 
+            preparedStatement.setInt(1, id);
+
+            // ... and return it
+            ResultSet resultSet = preparedStatement.executeQuery(); 
             if (resultSet.next()) {
                 return new Message(
                     id, 
                     resultSet.getInt("posted_by"), 
-                    resultSet.getString("message_text"), 
-                    resultSet.getLong("time_posted_epoch") 
-                ); 
+                    text, 
+                    resultSet.getLong("time_posted_epoch")
+                );
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println(e.getMessage()); 
         }
 
         return null; 
