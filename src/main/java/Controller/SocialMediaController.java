@@ -42,6 +42,8 @@ public class SocialMediaController {
         app.delete("/messages/{message_id}", this::deleteMessageByID); 
         app.patch("/messages/{message_id}", this::updateMessageTextByID); 
 
+        app.get("/accounts/{account_id}/messages", this::getMessagesByAccountID); 
+
         return app;
     }
 
@@ -148,28 +150,8 @@ public class SocialMediaController {
         }
     }
 
-    // private void updateMessageTextByID(Context ctx) throws JsonProcessingException {
-    //     ObjectMapper mapper = new ObjectMapper(); 
-    //     String jsonString = ctx.body(); 
-    //     System.out.println(jsonString); 
-    //     Message message = mapper.readValue(jsonString, Message.class); 
-
-    //     String newMessageText = message.getMessage_text();
-    //     if (newMessageText.isEmpty() || newMessageText.length() > 255) {
-    //         ctx.status(400); 
-    //         return; 
-    //     }
-
-    //     int id = Integer.parseInt(ctx.pathParam("message_id")); 
-    //     if (messageService.getMessageByID(id) != null) {
-    //         Message updatedMessage = messageService.updateMessageTextByID(id, newMessageText); 
-    //         if (updatedMessage != null) {
-    //             ctx.json(mapper.writeValueAsString(updatedMessage)); 
-    //         } else {
-    //             ctx.status(400); 
-    //         }
-    //     } else {
-    //         ctx.status(400); 
-    //     }
-    // }
+    public void getMessagesByAccountID(Context ctx) {
+        int accountID = Integer.parseInt(ctx.pathParam("account_id")); 
+        ctx.json(messageService.getMessagesByAccountID(accountID)); 
+    }
 }
