@@ -36,6 +36,8 @@ public class SocialMediaController {
         app.post("/register", this::postRegisterHandler); 
         app.post("/login", this::postLoginHandler); 
 
+        app.post("/messages", this::postMessagesHandler); 
+
         return app;
     }
 
@@ -58,7 +60,6 @@ public class SocialMediaController {
         }
 
         Account addedAccount = accountService.addAccount(account); 
-
         if (addedAccount == null) {
             ctx.status(400); 
         } else {
@@ -66,12 +67,12 @@ public class SocialMediaController {
         }
     }
 
-    private void postLoginHandler(Context ctx) throws JsonProcessingException{
+    private void postLoginHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper(); 
         String jsonString = ctx.body(); 
         Account account = mapper.readValue(jsonString, Account.class); 
 
-        Account loggedInAccount = accountService.loginAccount(account); 
+        Account loggedInAccount = accountService.loginToAccount(account); 
 
         if (loggedInAccount == null) {
             ctx.status(401); 
@@ -79,6 +80,27 @@ public class SocialMediaController {
             ctx.json(mapper.writeValueAsString(loggedInAccount)); 
         }
 
+    }
+
+    private void postMessagesHandler(Context ctx) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper(); 
+        String jsonString = ctx.body(); 
+        Message message = mapper.readValue(jsonString, Message.class); 
+
+        String messageText = message.getMessage_text();
+        int postedBy = message.getPosted_by();  
+        if (messageText.isEmpty() || messageText.length() > 255 || accountService.getAccountByID(postedBy) == null) {
+            ctx.status(400);
+        } else {
+            Message createdMessage = messageService.createMessage(message);
+            if (createdMessage == null) {
+                ctx.status(400);
+            } else {
+                ctx.json(mapper.writeValueAsString(createdMessage)); 
+            }
+        }
+
+        
     }
 
 }

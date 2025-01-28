@@ -59,7 +59,7 @@ public class AccountDAO {
     //     return null; 
     // }
     
-    public Account loginAccount(Account account) {
+    public Account loginToAccount(Account account) {
         Connection connection = ConnectionUtil.getConnection(); 
 
         try {
@@ -81,6 +81,30 @@ public class AccountDAO {
             System.out.println(e.getMessage()); 
         }
 
+        return null; 
+    }
+
+    public Account getAccountByID(int id) {
+        Connection connection = ConnectionUtil.getConnection(); 
+
+        try {
+            String sql = "SELECT * FROM account WHERE account_id = ?"; 
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql); 
+            preparedStatement.setInt(1, id);
+
+            ResultSet resultSet = preparedStatement.executeQuery(); 
+            while (resultSet.next()) {
+                return new Account(
+                    id, 
+                    resultSet.getString("username"), 
+                    resultSet.getString("password")
+                ); 
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage()); 
+        }
+        
         return null; 
     }
 }

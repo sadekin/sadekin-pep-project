@@ -16,7 +16,11 @@ public class AccountService {
         return accountDAO.addAccount(account); 
     }
 
-    public Account loginAccount(Account account) {
-        return accountDAO.loginAccount(account); 
+    public Account loginToAccount(Account account) {
+        return accountDAO.loginToAccount(account); 
+    }
+
+    public Account getAccountByID(int id) {
+        return accountDAO.getAccountByID(id); 
     }
 }
