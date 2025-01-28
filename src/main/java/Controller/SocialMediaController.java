@@ -37,6 +37,7 @@ public class SocialMediaController {
         app.post("/login", this::postLoginHandler); 
 
         app.post("/messages", this::postMessagesHandler); 
+        app.get("/messages", this::getAllMessages); 
 
         return app;
     }
@@ -101,6 +102,10 @@ public class SocialMediaController {
         }
 
         
+    }
+
+    private void getAllMessages(Context ctx) {
+        ctx.json(messageService.getAllMessages()); 
     }
 
 }
