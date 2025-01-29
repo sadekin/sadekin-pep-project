@@ -9,6 +9,11 @@ import java.util.List;
 
 public class MessageDAO {
     
+    /**
+     * Creates a new message in the database.
+     * @param message
+     * @return the newly created message or null if something went wrong.
+     */
     public Message createMessage(Message message) {
         Connection connection = ConnectionUtil.getConnection(); 
 
@@ -39,6 +44,10 @@ public class MessageDAO {
         return null; 
     }
 
+    /**
+     * Gets all the messages that exist in the database.
+     * @return a list containing every existing message. 
+     */
     public List<Message> getAllMessages() {
         Connection connection = ConnectionUtil.getConnection(); 
         List<Message> messages = new ArrayList<>(); 
@@ -66,6 +75,11 @@ public class MessageDAO {
         return messages; 
     }
 
+    /**
+     * Gets a message by its ID. 
+     * @param id
+     * @return the message if found, else null. 
+     */
     public Message getMessageByID(int id) {
         Connection connection = ConnectionUtil.getConnection(); 
 
@@ -89,9 +103,14 @@ public class MessageDAO {
             System.out.println(e.getMessage()); 
         }
 
+        // message doesn't exist
         return null; 
     }
 
+    /**
+     * Deletes a message by its ID. 
+     * @param id
+     */
     public void deleteMessageByID(int id) {
         Connection connection = ConnectionUtil.getConnection(); 
         try {
@@ -105,6 +124,12 @@ public class MessageDAO {
         }
     }
 
+    /**
+     * Updates an existing message's content. 
+     * @param id message_id
+     * @param text the new content 
+     * @return the newly updated message or null if the message wasn't found by the given ID. 
+     */
     public Message updateMessageTextByID(int id, String text) {
         Connection connection = ConnectionUtil.getConnection(); 
 
@@ -138,6 +163,11 @@ public class MessageDAO {
         return null; 
     }
 
+    /**
+     * Gets all the messages posted by a particular user with the given account ID. 
+     * @param account_id 
+     * @return a list of all the messages posted by the user. 
+     */
     public List<Message> getMessagesByAccountID(int account_id) {
         Connection connection = ConnectionUtil.getConnection(); 
         List<Message> messages = new ArrayList<>(); 

@@ -4,8 +4,6 @@ import Model.Account;
 import Util.ConnectionUtil;
 
 import java.sql.*;
-import java.util.ArrayList; 
-import java.util.List; 
 
 public class AccountDAO {
     
@@ -44,7 +42,8 @@ public class AccountDAO {
     }
 
     /** 
-     * Helper function for ensuring that we don't create duplicate accounts during registration.
+     * Gets an account by username. Helper function for ensuring that we 
+     * don't create duplicate accounts during registration.
      * @param username 
      * @return the Account object with the already existing username or null if not found.
      */

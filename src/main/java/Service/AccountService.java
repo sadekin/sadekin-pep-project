@@ -3,8 +3,6 @@ package Service;
 import Model.Account; 
 import DAO.AccountDAO;
 
-import java.util.List;
-
 public class AccountService {
     AccountDAO accountDAO; 
 
@@ -16,7 +14,7 @@ public class AccountService {
     }
 
     /** 
-     * Uses AccountDAO to add a new account to the database. 
+     * Uses AccountDAO to add a valid new account to the database. 
      * @param account to add.
      * @return added account or null if registration unsuccessful.
     */
