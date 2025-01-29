@@ -60,11 +60,6 @@ public class SocialMediaController {
         String jsonString = ctx.body(); 
         Account account = mapper.readValue(jsonString, Account.class); 
 
-        if (account.username.isEmpty() || account.password.length() < 4) {
-            ctx.status(400); 
-            return; 
-        }
-
         Account addedAccount = accountService.addAccount(account); 
         if (addedAccount == null) {
             ctx.status(400); 
@@ -79,7 +74,6 @@ public class SocialMediaController {
         Account account = mapper.readValue(jsonString, Account.class); 
 
         Account loggedInAccount = accountService.loginToAccount(account); 
-
         if (loggedInAccount == null) {
             ctx.status(401); 
         } else {

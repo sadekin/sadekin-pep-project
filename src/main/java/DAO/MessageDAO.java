@@ -24,7 +24,7 @@ public class MessageDAO {
             // return inserted message
             ResultSet pkResultSet = preparedStatement.getGeneratedKeys(); 
             if (pkResultSet.next()) {
-                int generatedMessageID = (int) pkResultSet.getLong("message_id"); 
+                int generatedMessageID = pkResultSet.getInt("message_id"); 
                 return new Message(
                     generatedMessageID, 
                     message.getPosted_by(), 
@@ -59,7 +59,6 @@ public class MessageDAO {
                 );
                 messages.add(message); 
             }
-
         } catch (SQLException e) {
             System.out.println(e.getMessage()); 
         }
@@ -96,7 +95,7 @@ public class MessageDAO {
     public void deleteMessageByID(int id) {
         Connection connection = ConnectionUtil.getConnection(); 
         try {
-            // straightforward
+            // delete message by ID
             String sql = "DELETE * FROM message WHERE message_id = ?"; 
             PreparedStatement preparedStatement = connection.prepareStatement(sql); 
             preparedStatement.setInt(1, id);
